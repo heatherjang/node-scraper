@@ -23,6 +23,7 @@
   "homepage": "https://github.com/heatherjang/node-scraper",
   "dependencies": {
     "cheerio": "^0.18.0",
+    "express": "^4.12.2",
     "request": "^2.53.0"
   }
 }
