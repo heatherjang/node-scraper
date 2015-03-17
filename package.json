@@ -1,0 +1,28 @@
+{
+  "name": "node_scraper",
+  "version": "1.0.0",
+  "description": "Basic scraper project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:heatherjang/node-scraper.git"
+  },
+  "keywords": [
+    "scraper",
+    "node",
+    "js"
+  ],
+  "author": "Hjang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/heatherjang/node-scraper/issues"
+  },
+  "homepage": "https://github.com/heatherjang/node-scraper",
+  "dependencies": {
+    "cheerio": "^0.18.0",
+    "request": "^2.53.0"
+  }
+}
