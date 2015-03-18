@@ -1,41 +1,55 @@
 var request = require('request');
 var cheerio = require('cheerio');
 var fs = require('fs');
-var url = process.argv[2];
 
 function scraper(err, response, body){
   if (err){
     console.log("Error: ", err)
     return;
   }
-  var $ = cheerio.load(body);
-  var objArray = [];
-  
-  $('tr').each(function(){
-    var absURL, permission, type;
+  var dataToWrite = parse('tr', body);
+  write(dataToWrite);
+};
+
+function parse(element, html){
+  var $ = cheerio.load(html);
+  var dataToWrite = [];
+
+  $(element).each(function(){
+    var imgURL, absURL, permission, fileType, record;
     var row = $(this);
-
-    var relURL = row.find('td').find('a').attr('href');
-    absURL = "http://substack.net" + relURL;
-    permission = row.find('td').find('code').first().text();
-    var fileSplit = relURL.toString().split('.');
-    var len = fileSplit.length;
-    type = fileSplit[len-1];
-
-    var imgObj = makeImgObj(absURL, permission, type)
-
-    objArray.push(imgObj)
+    imgURL = findElemInRow(row, 'a').attr('href')
+    if (validFile(imgURL)){
+      fileType = validFile(imgURL)
+      absURL = "http://substack.net" + imgURL;
+      permission = findElemInRow(row,'code').first().text();
+      record = { absURL: absURL, permission: permission, fileType: fileType };
+      dataToWrite.push(record);
+    }
   });
-
-  // fs.writeFile('webscrape.json', JSON.stringify(objArray, null, 4), function(err){
-  //   console.log('Scrape successful! - Check your project directory for the webscrape.json file');
-  // });
-
+  return dataToWrite;
 }
 
-function makeImgObj(absURL, permission, type){
-  var imgObj = { absURL: absURL, permission: permission, type: type };
-  return imgObj;
+function write(data){
+  fs.writeFile('webscrape.json', JSON.stringify(data, null, 4), function(err){
+    console.log('Scrape successful! - Check your project directory for the webscrape.json file');
+  });
 }
 
-request(url, scraper);
+function validFile(url){
+  var split = url.toString().split('.');
+  var len = split.length;
+  var type = split[len-1];
+  if (type.match(/[\/]/)){
+    return;
+  }
+  return type;
+}
+
+function findElemInRow(row, element){
+  return row.find('td').find(element);
+}
+
+module.exports = function(url){
+  request(url, scraper);
+}
