@@ -7,8 +7,8 @@ function scraper(err, response, body){
     console.log("Error: ", err)
     return;
   }
-  var dataToWrite = parse('tr', body);
-  write(dataToWrite);
+  var data = parse('tr', body);
+  write(data);
 };
 
 function parse(element, html){
